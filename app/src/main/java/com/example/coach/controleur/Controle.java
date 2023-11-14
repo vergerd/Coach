@@ -5,7 +5,10 @@ import static com.example.coach.outils.Serializer.serialize;
 
 import android.content.Context;
 
+import com.example.coach.modele.AccesLocal;
 import com.example.coach.modele.Profil;
+
+import java.util.Date;
 
 /**
  * Classe singleton Controle : répond aux attentes de l'activity
@@ -14,10 +17,13 @@ public final class Controle {
     private static Controle instance = null;
     private static Profil profil;
     private static String nomFic = "saveprofil";
+    private AccesLocal accesLocal;
 
         private Controle(Context context) {
         super();
-        recupSerialize(context);
+        accesLocal = AccesLocal.getInstance(context);
+        profil = accesLocal.recupDernier();
+        //recupSerialize(context);
     }
 
     /**
@@ -39,8 +45,9 @@ public final class Controle {
      * @param sexe 1 pour homme, 0 pour femme
      */
     public void creerProfil (int poids, int taille, int age, int sexe, Context context){
-        profil = new Profil(poids, taille, age, sexe);
-        serialize(nomFic, profil, context);
+        profil = new Profil(poids, taille, age, sexe, new Date());
+        //serialize(nomFic, profil, context);
+        accesLocal.ajout(profil);
     }
 
     /**
@@ -119,7 +126,9 @@ public final class Controle {
      * Récupération du profil sérialisé
      * @param context
      */
-    private static void recupSerialize(Context context){
-        profil = (Profil)deSerialize(nomFic, context);
-    }
+   // private static void recupSerialize(Context context){
+   //     profil = (Profil)deSerialize(nomFic, context);
+   //
+   // }
+
 }

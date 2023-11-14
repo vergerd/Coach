@@ -3,6 +3,7 @@ package com.example.coach.modele;
 import static java.lang.Math.pow;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Classe métier Profil
@@ -22,6 +23,7 @@ public class Profil implements Serializable {
     private int sexe;
     private float img = 0;
     private String message = "";
+    private Date dateMesure;
 
     /**
      * Constructeur : valorise directement les proriétés poids, taille, age, sexe
@@ -30,26 +32,27 @@ public class Profil implements Serializable {
      * @param age
      * @param sexe 1 pour homme, 0 pour femme
      */
-    public Profil(int poids, int taille, int age, int sexe) {
+    public Profil(Integer poids, Integer taille, Integer age, Integer sexe, Date dateMesure) {
         this.poids = poids;
         this.taille = taille;
         this.age = age;
         this.sexe = sexe;
+        this.dateMesure = dateMesure;
     }
 
-    public int getPoids() {
+    public Integer getPoids() {
         return poids;
     }
 
-    public int getTaille() {
+    public Integer getTaille() {
         return taille;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public int getSexe() {
+    public Integer getSexe() {
         return sexe;
     }
 
@@ -63,6 +66,14 @@ public class Profil implements Serializable {
             img = (float)((1.2*getPoids()/(taille*taille))+(0.23*getAge())-(10.83*getSexe())-5.4);
         }
         return img;
+    }
+
+    /**
+     * Retourne la date et l'heure de l'enregistrement du profil
+     * @return
+     */
+    public Date getDateMesure() {
+        return dateMesure;
     }
 
     /**
