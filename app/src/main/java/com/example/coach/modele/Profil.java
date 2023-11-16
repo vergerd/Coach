@@ -2,6 +2,13 @@ package com.example.coach.modele;
 
 import static java.lang.Math.pow;
 
+import android.util.Log;
+
+import com.example.coach.outils.MesOutils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -98,5 +105,23 @@ public class Profil implements Serializable {
             }
         }
         return message;
+    }
+
+    /**
+     * Convertit le contenu du profil en JSONObject
+     * @return peofil au format JSON Object
+     */
+    public JSONObject convertToJSONObject(){
+        JSONObject jsonProfil = new JSONObject();
+        try {
+            jsonProfil.put("poids", poids);
+            jsonProfil.put("taille", age);
+            jsonProfil.put("age", age);
+            jsonProfil.put("sexe", sexe);
+            jsonProfil.put("datemesure", MesOutils.convertDateToString(dateMesure));
+        } catch (JSONException e) {
+            Log.d("erreur", "************ classe Profil, méthode convertToJSONObject, erreur de conversion");
+        }
+        return jsonProfil;
     }
 }
