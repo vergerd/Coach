@@ -2,36 +2,18 @@ package com.example.coach.vue;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
 import com.example.coach.R;
 import com.example.coach.controleur.Controle;
-import com.example.coach.modele.Profil;
 
-/**
- * Classe d'affichage (activity) MainActivity
- * Permet le calcul d'un IMG
- */
 public class MainActivity extends AppCompatActivity {
-    private EditText txtPoids;
-    private EditText txtTaille;
-    private EditText txtAge;
-    private RadioButton rdHomme;
-    private RadioButton rdFemme;
-    private TextView lblIMG;
-    private ImageView imgSmiley;
-    private Button btnCalc;
 
     private Controle controle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,102 +22,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialisations à l'ouverture :
-     * - récupération des objets graphiques
-     * - création du contrôleur
-     * - demande d'écoute (évenements sur objets graphiques)
+     * Initialisations
      */
     private void init(){
-        txtPoids = (EditText) findViewById(R.id.txtPoids);
-        txtTaille = (EditText) findViewById(R.id.txtTaille);
-        txtAge = (EditText) findViewById(R.id.txtAge);
-        rdHomme = (RadioButton) findViewById(R.id.rdHomme);
-        rdFemme = (RadioButton) findViewById(R.id.rdFemme);
-        lblIMG = (TextView) findViewById(R.id.lblIMG);
-        imgSmiley = (ImageView) findViewById(R.id.imgSmiley);
-        btnCalc = (Button) findViewById(R.id.btnCalc);
-        controle = Controle.getInstance(this);
-        ecouteCalcul();
-        //recupProfil();
+        controle = Controle.getInstance();
+        creerMenu();
+    }
+
+    /**
+     * Demande de créer les écoutes sur les butons du menu
+     */
+    private void creerMenu(){
+        ecouteMenu((ImageButton)findViewById(R.id.btnMonIMG), CalculActivity.class);
+        ecouteMenu((ImageButton)findViewById(R.id.btnMonHistorique), HistoActivity.class);
 
     }
 
     /**
-     * Ecoute l'événement clic sur le bouton btnCalc
+     * Met en place une écoute événementielle sur une image
+     * @param btn l'image "bouton" concernée
+     * @param classe la classe correspondant à l'activity à ouvrir sur le clic du bouton
      */
-    private void ecouteCalcul(){
-        btnCalc.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v){
-                int poids = 0;
-                int taille = 0;
-                int age = 0;
-                int sexe = 0;
+    private void ecouteMenu(ImageButton btn, Class classe){
+        btn.setOnClickListener(new Button.OnClickListener() {
 
-                try{
-                    poids = Integer.parseInt(txtPoids.getText().toString());
-                    taille = Integer.parseInt(txtTaille.getText().toString());
-                    age = Integer.parseInt(txtAge.getText().toString());
-                }catch(Exception e) {}
-
-                if(rdHomme.isChecked()){
-                    sexe = 1;
-                }
-
-                if(poids == 0 || taille == 0 || age == 0){
-                    Toast.makeText(MainActivity.this, "Veuillez saisir tous les champs", Toast.LENGTH_SHORT).show();
-                }else{
-                    afficheResult(poids, taille, age, sexe);
-                }
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, classe);
+                startActivity(intent);
             }
         });
     }
-
-    /**
-     * Affiche l'image et le message correspondant au calcul de l'img
-     * @param poids
-     * @param taille
-     * @param age
-     * @param sexe
-     */
-    private void afficheResult(Integer poids, Integer taille, Integer age, Integer sexe) {
-        controle.creerProfil(poids, taille, age, sexe);
-        float img = controle.getImg();
-        String message = controle.getMessage();
-        switch(message){
-            case "normal":
-                imgSmiley.setImageResource(R.drawable.normal);
-                lblIMG.setTextColor(Color.GREEN);
-                break;
-            case "trop faible":
-                imgSmiley.setImageResource(R.drawable.maigre);
-                lblIMG.setTextColor(Color.RED);
-                break;
-            case "trop élevé":
-                imgSmiley.setImageResource(R.drawable.graisse);
-                lblIMG.setTextColor(Color.RED);
-                break;
-        }
-        lblIMG.setText(String.format("%.01f", img)+" : IMG "+message);
-    }
-
-    /**
-     * Recupère les informations d'un profil et les affiche
-     */
-    public void recupProfil(){
-        if(controle.getTaille() != null){
-            txtTaille.setText(""+controle.getTaille());
-            txtPoids.setText(""+controle.getPoids());
-            txtAge.setText(""+controle.getAge());
-            if(controle.getSexe() == 1){
-                rdHomme.setChecked(true);
-            }else{
-                rdFemme.setChecked(true);
-            }
-            btnCalc.performClick();
-        }
-    }
 }
-
-
-
-

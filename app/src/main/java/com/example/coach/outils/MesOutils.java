@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Classe abstraite contenant différents outils
+ */
 public abstract class MesOutils {
 
     /**
@@ -24,7 +27,7 @@ public abstract class MesOutils {
     }
 
     /**
-     * onversion d'une date du format String vers le format Date avec un format précis
+     * Conversion d'une date du format String vers le format Date avec un format précis
      * @param uneDate au format String
      * @return la date au format date
      */
@@ -40,5 +43,14 @@ public abstract class MesOutils {
     public static String convertDateToString(Date uneDate){
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return date.format(uneDate);
+    }
+
+    /**
+     * Conversion d'un float vers le format string avec 2 chiffres après la virgule
+     * @param nombre
+     * @return
+     */
+    public static String format2Decimal (Float nombre){
+        return String.format("%.01f", nombre);
     }
 }

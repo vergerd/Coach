@@ -6,10 +6,10 @@ import com.example.coach.controleur.Controle;
 import com.example.coach.outils.AccesHTTP;
 import com.example.coach.outils.AsyncResponse;
 import com.example.coach.outils.MesOutils;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -22,6 +22,13 @@ public class AccesDistant implements AsyncResponse {
     private Controle controle;
 
     /**
+     * Constructeur privé
+     */
+    private AccesDistant() {
+        controle = Controle.getInstance();
+    }
+
+    /**
      * Création d'une instance unique de la classe
      * @return
      */
@@ -30,13 +37,6 @@ public class AccesDistant implements AsyncResponse {
             instance = new AccesDistant();
         }
         return instance;
-    }
-
-    /**
-     * Constructeur privé
-     */
-    private AccesDistant() {
-        controle = Controle.getInstance(null);
     }
 
     /**
@@ -54,17 +54,26 @@ public class AccesDistant implements AsyncResponse {
             if(!code.equals("200")){
                 Log.d("erreur", "************ retour serveur code="+code+" result="+result);
             }else{
-                if(message.equals("dernier")){
-                    JSONObject info = new JSONObject(result);
-                    Integer poids = info.getInt("poids");
-                    Integer taille = info.getInt("taille");
-                    Integer age = info.getInt("age");
-                    Integer sexe = info.getInt("sexe");
-                    Date datemesure = MesOutils.convertStringToDate(info.getString("datemesure"), "yyyy-MM-dd hh:mm:ss");
-                    Profil profil = new Profil(poids, taille, age, sexe, datemesure);
-                    controle.setProfil(profil);
+                if(message.equals("tous")){
+                    JSONArray resultJson = new JSONArray(result);
+                    ArrayList<Profil> lesProfils = new ArrayList<Profil>();
+                    for(int k=0;k<resultJson.length();k++) {
+                        JSONObject info = new JSONObject(resultJson.get(k).toString());
+                        Integer poids = info.getInt("poids");
+                        Integer taille = info.getInt("taille");
+                        Integer age = info.getInt("age");
+                        Integer sexe = info.getInt("sexe");
+                        Date dateMesure = MesOutils.convertStringToDate(info.getString("datemesure"),
+                                "yyyy-MM-dd hh:mm:ss");
+                        Profil profil = new Profil(dateMesure, poids, taille, age, sexe);
+                        lesProfils.add(profil);
+                    }
+                    Log.d("!!!taille collection!!!", "taille : "+lesProfils.size());
+                    controle.setLesProfils(lesProfils);
+                    Log.d("!!!taille collection!!!", "taille : "+controle.getLesProfils().size());
+                    }
                 }
-            }
+
         } catch (JSONException e) {
             Log.d("erreur", "************ output n'est pas au format JSON");
         }

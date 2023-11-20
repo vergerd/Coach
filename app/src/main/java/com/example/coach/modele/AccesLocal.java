@@ -74,7 +74,7 @@ public class AccesLocal {
             Integer taille = curseur.getInt(2);
             Integer age = curseur.getInt(3);
             Integer sexe = curseur.getInt(4);
-            profil = new Profil(poids, taille, age, sexe, dateMesure);
+            profil = new Profil(dateMesure, poids, taille, age, sexe);
         }
         curseur.close();
         bd.close();

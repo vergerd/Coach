@@ -16,7 +16,7 @@ import java.util.Date;
  * Classe métier Profil
  * contient les informations du profil
  */
-public class Profil implements Serializable {
+public class Profil implements Serializable, Comparable {
 
     // constantes
     private static final Integer minFemme = 15; // maigre si en dessous
@@ -39,7 +39,7 @@ public class Profil implements Serializable {
      * @param age
      * @param sexe 1 pour homme, 0 pour femme
      */
-    public Profil(Integer poids, Integer taille, Integer age, Integer sexe, Date dateMesure) {
+    public Profil(Date dateMesure, Integer poids, Integer taille, Integer age, Integer sexe) {
         this.poids = poids;
         this.taille = taille;
         this.age = age;
@@ -69,8 +69,9 @@ public class Profil implements Serializable {
      */
     public float getImg() {
         if(img == 0){
-            float taille = (float)(getTaille())/100;
-            img = (float)((1.2*getPoids()/(taille*taille))+(0.23*getAge())-(10.83*getSexe())-5.4);
+            float taillecm = (float)(getTaille())/100;
+            Log.d("!!!test convert!!!!", "taille : "+taillecm);
+            img = (float)((1.2*getPoids()/(taillecm*taillecm))+(0.23*age)-(10.83*sexe)-5.4);
         }
         return img;
     }
@@ -114,14 +115,24 @@ public class Profil implements Serializable {
     public JSONObject convertToJSONObject(){
         JSONObject jsonProfil = new JSONObject();
         try {
+            jsonProfil.put("datemesure", MesOutils.convertDateToString(dateMesure));
             jsonProfil.put("poids", poids);
-            jsonProfil.put("taille", age);
+            jsonProfil.put("taille", taille);
             jsonProfil.put("age", age);
             jsonProfil.put("sexe", sexe);
-            jsonProfil.put("datemesure", MesOutils.convertDateToString(dateMesure));
         } catch (JSONException e) {
             Log.d("erreur", "************ classe Profil, méthode convertToJSONObject, erreur de conversion");
         }
         return jsonProfil;
+    }
+
+    /**
+     * Comparaison des profils sur datemesure
+     * @param o
+     * @return
+     */
+    @Override
+    public int compareTo(Object o) {
+        return dateMesure.compareTo(((Profil)o).getDateMesure());
     }
 }
